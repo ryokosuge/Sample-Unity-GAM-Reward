@@ -4,6 +4,36 @@
 
 [スタートガイド | Unity | Google Developers](https://developers.google.com/admob/unity/start)
 
+簡単に実装したスクリプトは[Assets/Scripts/GAMReward.cs](Assets/Scripts/GAMReward.cs)に置いてあるので参考にしてください。
+
+## もらったIDでテストしたい場合
+
+以下の処理の`adUnitID`の値をOSに合わせて改変してください。
+
+```c#
+    #region RewardBasedVideoAd request
+
+    private void requestRewardBasedVideoAd()
+    {
+        var adUnitID = String.Empty;
+#if UNITY_EDITOR
+        adUnitID = "unused";
+#elif UNITY_ANDROID
+        // ここにAndroid用に発行してもらったadUnitIDを入れる
+        adUnitID = "/6499/example/rewarded-video";
+#elif UNITY_IPHONE
+        // ここにiOS用に発行してもらったadUnitIDを入れる
+        adUnitID = "/6499/example/rewarded-video";
+#else
+        adUnitID = "unexpected_platform";
+#endif
+        var request = new AdRequest.Builder().Build();
+        this.rewardBasedVideoAd.LoadAd(request, adUnitID);
+    }
+
+    #endregion
+```
+
 ## 注意点
 
 GAMで発行された場合、AdUnitIDのみ渡されます。
@@ -48,5 +78,3 @@ public class GoogleMobileAdsDemoScript : MonoBehaviour
     </application>
 </manifest>
 ```
-
-簡単に実装したスクリプトは[Assets/Scripts/GAMReward.cs](Assets/Scripts/GAMReward.cs)に置いてあるので参考にしてください。
