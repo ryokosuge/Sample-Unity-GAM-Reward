@@ -78,3 +78,40 @@ public class GoogleMobileAdsDemoScript : MonoBehaviour
     </application>
 </manifest>
 ```
+
+![screenshot01](./img/screenshot01.png)
+
+### iOSの設定の注意点
+
+AdMobのSDKの7.42.0からnfo.plistに必要な値（AppID or AdManagerを使用するフラグ）がないと起動時にクラッシュするようになりました。
+
+`Assets/GoogleMobileAds/Editor`ディレクトリにある`PListProcessor.cs`を開いて以下のように記述を追加します。
+
+```cs
+
+public static class PListProcessor
+{
+    [PostProcessBuild]
+    public static void OnPostProcessBuild(BuildTarget buildTarget, string path)
+    {
+        // Replace with your iOS AdMob app ID. Your AdMob App ID will look
+        // similar to this sample ID: ca-app-pub-3940256099942544~1458002511
+
+				// appIdは使用しないのでコメントアウト
+        // string appId = "ADMOB_APPLICATION_ID";
+
+        string plistPath = Path.Combine(path, "Info.plist");
+        PlistDocument plist = new PlistDocument();
+
+        plist.ReadFromFile(plistPath);
+				// ここも使用しないのでコメントアウト
+        // plist.root.SetString("GADApplicationIdentifier", appId);
+				// これを追加する
+        plist.root.SetBoolean("GADIsAdManagerApp", true);
+
+        File.WriteAllText(plistPath, plist.WriteToString());
+    }
+}
+```
+
+![screenshot02](./img/screenshot02.png)
